@@ -127,6 +127,26 @@ Cela est possible grâce à :
 2. **Web Push API** : Permet l'envoi de notifications aux utilisateurs abonnés
 3. **Système d'abonnement** : Gère les endpoints de notification pour chaque utilisateur
 
+## Captures d'écran
+
+### Interface de l'application
+
+![Interface de l'application](screenshots/app-interface.png)
+
+### Types de notifications
+
+#### Notification in-app (toast)
+
+![Notification in-app](screenshots/in-app-notification.png)
+
+#### Notification système
+
+![Notification système](screenshots/system-notification.png)
+
+#### Notification push
+
+![Notification push](screenshots/push-notification.png)
+
 ## Notes
 
 - Les notifications push ne fonctionnent que dans les navigateurs modernes qui prennent en charge l'API Web Push
