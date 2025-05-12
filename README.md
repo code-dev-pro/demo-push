@@ -148,6 +148,12 @@ Cela est possible grâce à :
 ![Notification push](screenshots/push-notification.png)
 ![Notification push](screenshots/app-pwa.PNG)
 ![Notification push](screenshots/app-watch.jpg)
+
+### Démonstration vidéo
+
+Voici une démonstration en vidéo de l'application en action :
+
+[Voir la démonstration vidéo](screenshots/ScreenRecording.MP4)
 ## Clés VAPID et sécurité des notifications push
 
 Les notifications push utilisent le protocole VAPID (Voluntary Application Server Identification) pour sécuriser la communication entre le serveur d'application et les services de notification des navigateurs.
