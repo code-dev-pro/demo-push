@@ -151,9 +151,11 @@ Cela est possible grâce à :
 
 ### Démonstration vidéo
 
-Voici une démonstration en vidéo de l'application en action :
+Une démonstration vidéo de l'application est disponible sur Cloudinary. Pour la visualiser, accédez à la collection suivante :
 
-[Voir la démonstration vidéo](screenshots/ScreenRecording.MP4)
+[Voir la démonstration vidéo sur Cloudinary](https://collection.cloudinary.com/dx65nxpkq/528c73ace0f851050dbeae34ca132347)
+
+*Note : Pour intégrer directement la vidéo dans ce README, vous aurez besoin de l'URL directe du fichier vidéo depuis votre tableau de bord Cloudinary.*
 ## Clés VAPID et sécurité des notifications push
 
 Les notifications push utilisent le protocole VAPID (Voluntary Application Server Identification) pour sécuriser la communication entre le serveur d'application et les services de notification des navigateurs.
