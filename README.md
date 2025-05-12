@@ -147,6 +147,26 @@ Cela est possible grâce à :
 
 ![Notification push](screenshots/push-notification.png)
 
+## Services dédiés pour les notifications push
+
+Bien que cette démo implémente les notifications push avec un serveur Express personnalisé, il existe plusieurs services tiers spécialisés qui facilitent l'implémentation des notifications push à grande échelle :
+
+### Services populaires
+
+- **[OneSignal](https://onesignal.com/)** : Plateforme complète de notification push, des analyses détaillées et une interface utilisateur conviviale.
+
+- **[Pusher](https://pusher.com/)** : Service de communication en temps réel qui inclut les notifications push parmi ses fonctionnalités.
+
+- **[Pushwoosh](https://www.pushwoosh.com/)** : Solution de notification push multi-plateforme avec des fonctionnalités de segmentation avancées.
+
+### Avantages des services dédiés
+
+- **Évolutivité** : Gestion de millions de notifications sans infrastructure complexe
+- **Fiabilité** : Taux de livraison élevé grâce à l'optimisation des canaux de livraison
+- **Analyses** : Suivi détaillé des taux d'ouverture et d'engagement
+- **Segmentation** : Ciblage précis des utilisateurs selon divers critères
+- **Programmation** : Planification des notifications à des moments optimaux
+
 ## Notes
 
 - Les notifications push ne fonctionnent que dans les navigateurs modernes qui prennent en charge l'API Web Push
