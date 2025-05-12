@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './App.css'
+
+// Déterminer l'URL du backend en fonction de l'environnement
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168.') 
+  ? 'http://192.168.1.33:5001' 
+  : 'https://demo-push-backend.vercel.app';
+
+console.log('App.jsx - API URL:', API_URL);
 import {
   isPushNotificationSupported,
   askUserPermission,
@@ -22,14 +29,20 @@ function App() {
   useEffect(() => {
     // Vérifier si les notifications push sont supportées
     const supported = isPushNotificationSupported();
+    console.log('Notifications push supportées:', supported);
+    console.log('ServiceWorker in navigator:', 'serviceWorker' in navigator);
+    console.log('PushManager in window:', 'PushManager' in window);
     setPushSupported(supported);
     
     // Vérifier la permission actuelle
     if (supported) {
       setPushPermission(Notification.permission);
+      console.log('Permission actuelle:', Notification.permission);
       
       // Enregistrer le service worker
-      registerServiceWorker();
+      registerServiceWorker().then(reg => {
+        console.log('Service worker enregistré:', reg ? 'Oui' : 'Non');
+      });
     }
   }, []);
   
@@ -197,7 +210,7 @@ function App() {
     }
     
     try {
-      const response = await fetch('http://localhost:5001/api/auto-notify', {
+      const response = await fetch(`${API_URL}/api/auto-notify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -230,16 +243,29 @@ function App() {
           <strong>Support des notifications push:</strong> {pushSupported ? 'Oui' : 'Non'}
         </p>
         <p>
+          <strong>ServiceWorker disponible:</strong> {'serviceWorker' in navigator ? 'Oui' : 'Non'}
+        </p>
+        <p>
+          <strong>PushManager disponible:</strong> {'PushManager' in window ? 'Oui' : 'Non'}
+        </p>
+        <p>
           <strong>Permission:</strong> {pushPermission}
         </p>
         <p>
           <strong>Abonné:</strong> {subscribed ? 'Oui' : 'Non'}
         </p>
+        <p>
+          <strong>Conditions d'affichage du bouton:</strong> pushSupported={String(pushSupported)} et !subscribed={String(!subscribed)}
+        </p>
         
-        {pushSupported && !subscribed && (
-          <button onClick={handleSubscribe} className="btn primary">
-            S'abonner aux notifications push
-          </button>
+        <button onClick={handleSubscribe} className="btn primary" style={{display: pushSupported && !subscribed ? 'block' : 'none'}}>
+          S'abonner aux notifications push
+        </button>
+        
+        {!pushSupported && (
+          <p style={{color: 'red'}}>
+            Votre navigateur ne supporte pas les notifications push. Essayez Chrome ou Firefox.
+          </p>
         )}
       </div>
       

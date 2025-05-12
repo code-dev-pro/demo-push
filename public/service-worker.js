@@ -1,7 +1,5 @@
 // Service Worker pour gérer les notifications push
-
 self.addEventListener('push', function(event) {
-  console.log('[Service Worker] Notification push reçue');
   
   // Récupérer les données de la notification
   const data = event.data.json();
@@ -36,18 +34,9 @@ self.addEventListener('push', function(event) {
 
 // Gérer les clics sur les notifications
 self.addEventListener('notificationclick', function(event) {
-  console.log('[Service Worker] Notification cliquée', event.notification.tag);
   
   // Fermer la notification
   event.notification.close();
-  
-  // Gérer les actions
-  if (event.action === 'explore') {
-    console.log('[Service Worker] Action "Voir plus" cliquée');
-    // Ici, vous pouvez rediriger vers une page spécifique
-  } else {
-    console.log('[Service Worker] Notification principale cliquée');
-  }
   
   // Ouvrir ou focaliser sur la fenêtre principale de l'application
   event.waitUntil(
@@ -70,12 +59,10 @@ self.addEventListener('notificationclick', function(event) {
 
 // Installation du service worker
 self.addEventListener('install', function() {
-  console.log('[Service Worker] Installation');
   self.skipWaiting();
 });
 
 // Activation du service worker
 self.addEventListener('activate', function() {
-  console.log('[Service Worker] Activation');
   return self.clients.claim();
 });

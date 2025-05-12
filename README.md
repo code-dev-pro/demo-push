@@ -6,14 +6,14 @@ Cette application de démonstration montre comment implémenter des notification
 
 Cette démo prend en charge trois types de notifications :
 
-1. **Notifications in-app** : Affichées uniquement à l'intérieur de l'application via react-toastify (toasts)
-2. **Notifications système** : Notifications natives du système d'exploitation, affichées via l'API Notification du navigateur
-3. **Notifications push** : Notifications qui peuvent être reçues même lorsque l'application est fermée, via un service worker et l'API Web Push
+1. **Notifications in-app** : affichées uniquement à l'intérieur de l'application via react-toastify (toasts)
+2. **Notifications système** : notifications natives du système d'exploitation, affichées via l'API Notification du navigateur
+3. **Notifications push** : notifications qui peuvent être reçues même lorsque l'application est fermée, via un service worker et l'API Web Push
 
 Autres fonctionnalités :
-- Service worker pour gérer les notifications push en arrière-plan
-- Serveur Express pour gérer les abonnements et l'envoi des notifications push
-- Interface utilisateur intuitive pour tester les différents types de notifications
+- service worker pour gérer les notifications push en arrière-plan
+- serveur Express pour gérer les abonnements et l'envoi des notifications push
+- interface utilisateur intuitive pour tester les différents types de notifications
 
 ## Schéma explicatif des systèmes de notifications
 
@@ -49,10 +49,10 @@ Autres fonctionnalités :
 
 ### Flux des notifications push
 
-1. **Abonnement** : L'utilisateur s'abonne aux notifications push via l'API Web Push
-2. **Stockage** : Le serveur stocke l'abonnement (endpoint, clés, etc.)
-3. **Envoi** : Le serveur envoie une notification via le service de push du navigateur
-4. **Réception** : Le service worker reçoit la notification et l'affiche, même si l'application est fermée
+1. **Abonnement** : l'utilisateur s'abonne aux notifications push via l'API Web Push
+2. **Stockage** : le serveur stocke l'abonnement (endpoint, clés, etc.)
+3. **Envoi** : le serveur envoie une notification via le service de push du navigateur
+4. **Réception** : le service worker reçoit la notification et l'affiche, même si l'application est fermée
 
 ### Comparaison des types de notifications
 
@@ -108,17 +108,17 @@ L'application démarrera sur http://localhost:5173.
 2. Cliquez sur "S'abonner aux notifications push" pour autoriser les notifications push
 3. Saisissez un titre et un message pour la notification
 4. Testez les différents types de notifications :
-   - **Notification in-app** : Affiche un toast à l'intérieur de l'application
-   - **Notification système** : Affiche une notification native du système d'exploitation
-   - **Notification push** : Envoie une notification qui s'affichera même lorsque l'application n'est pas au premier plan ou est fermée
+   - **Notification in-app** : affiche un toast à l'intérieur de l'application
+   - **Notification système** : affiche une notification native du système d'exploitation
+   - **Notification push** : envoie une notification qui s'affichera même lorsque l'application n'est pas au premier plan ou est fermée
 
 ## Notifications Push "Offline" comme les Applications Natives
 
 Cette démo implémente un système de notifications push qui fonctionne de manière similaire aux applications natives :
 
-- **Réception hors ligne** : Les notifications peuvent être reçues même lorsque l'utilisateur n'est pas sur le site web
-- **Fonctionnement en arrière-plan** : Grâce au service worker, les notifications sont traitées même lorsque l'application est fermée
-- **Persistance** : Les abonnements sont stockés côté serveur, permettant d'envoyer des notifications à tout moment
+- **Réception hors ligne** : les notifications peuvent être reçues même lorsque l'utilisateur n'est pas sur le site web
+- **Fonctionnement en arrière-plan** : grâce au service worker, les notifications sont traitées même lorsque l'application est fermée
+- **Persistance** : les abonnements sont stockés côté serveur, permettant d'envoyer des notifications à tout moment
 - **Notifications automatiques** : Démonstration de notifications envoyées à intervalles réguliers sans intervention de l'utilisateur
 
 Cela est possible grâce à :
@@ -146,6 +146,44 @@ Cela est possible grâce à :
 #### Notification push
 
 ![Notification push](screenshots/push-notification.png)
+![Notification push](screenshots/app-pwa.PNG)
+![Notification push](screenshots/app-watch.jpg)
+## Clés VAPID et sécurité des notifications push
+
+Les notifications push utilisent le protocole VAPID (Voluntary Application Server Identification) pour sécuriser la communication entre le serveur d'application et les services de notification des navigateurs.
+
+### Qu'est-ce que VAPID ?
+
+VAPID est un standard qui permet :
+
+1. **Authentification du serveur** : Les clés VAPID permettent d'identifier de manière unique votre serveur auprès des services de push des navigateurs (Firefox, Chrome, Edge, etc.)
+
+2. **Sécurité accrue** : Elles empêchent les tiers non autorisés d'envoyer des notifications à vos utilisateurs
+
+3. **Conformité aux standards** : Elles sont requises par les navigateurs modernes pour utiliser l'API Web Push
+
+### Comment fonctionnent les clés VAPID ?
+
+- **Clé publique** : Envoyée au navigateur de l'utilisateur lors de l'abonnement aux notifications
+- **Clé privée** : Conservée uniquement sur le serveur et utilisée pour signer les requêtes de notification
+
+### Génération des clés VAPID
+
+Dans cette démo, les clés VAPID sont générées avec la bibliothèque `web-push` :
+
+```javascript
+// Générer des clés VAPID
+const vapidKeys = webpush.generateVAPIDKeys();
+
+console.log('Public Key:', vapidKeys.publicKey);
+console.log('Private Key:', vapidKeys.privateKey);
+```
+
+### Sécurité et bonnes pratiques
+
+- **Ne jamais partager la clé privée** : Elle doit rester confidentielle et sécurisée
+- **Utiliser des clés fixes** : Dans un environnement de production, utilisez toujours les mêmes clés pour maintenir la validité des abonnements
+- **Stockage sécurisé** : Stockez les clés dans des variables d'environnement ou un système de gestion de secrets
 
 ## Services dédiés pour les notifications push
 
@@ -153,19 +191,19 @@ Bien que cette démo implémente les notifications push avec un serveur Express 
 
 ### Services populaires
 
-- **[OneSignal](https://onesignal.com/)** : Plateforme complète de notification push, des analyses détaillées et une interface utilisateur conviviale.
+- **[OneSignal](https://onesignal.com/)** : plateforme complète de notification push, des analyses détaillées et une interface utilisateur conviviale.
 
-- **[Pusher](https://pusher.com/)** : Service de communication en temps réel qui inclut les notifications push parmi ses fonctionnalités.
+- **[Pusher](https://pusher.com/)** : service de communication en temps réel qui inclut les notifications push parmi ses fonctionnalités.
 
-- **[Pushwoosh](https://www.pushwoosh.com/)** : Solution de notification push multi-plateforme avec des fonctionnalités de segmentation avancées.
+- **[Pushwoosh](https://www.pushwoosh.com/)** : solution de notification push multi-plateforme avec des fonctionnalités de segmentation avancées.
 
 ### Avantages des services dédiés
 
-- **Évolutivité** : Gestion de millions de notifications sans infrastructure complexe
-- **Fiabilité** : Taux de livraison élevé grâce à l'optimisation des canaux de livraison
-- **Analyses** : Suivi détaillé des taux d'ouverture et d'engagement
-- **Segmentation** : Ciblage précis des utilisateurs selon divers critères
-- **Programmation** : Planification des notifications à des moments optimaux
+- **Évolutivité** : gestion de millions de notifications sans infrastructure complexe
+- **Fiabilité** : taux de livraison élevé grâce à l'optimisation des canaux de livraison
+- **Analyses** : suivi détaillé des taux d'ouverture et d'engagement
+- **Segmentation** : ciblage précis des utilisateurs selon divers critères
+- **Programmation** : planification des notifications à des moments optimaux
 
 ## Notes
 

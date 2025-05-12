@@ -6,12 +6,24 @@ import webpush from 'web-push';
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5177', 'https://demo-push-notifications.vercel.app', 'https://demo-push-o2fiphz55-laurenthenemanedukeasycoms-projects.vercel.app', 'https://demo-push.vercel.app'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(bodyParser.json());
 
-// Générer des clés VAPID pour les notifications push
+// Route de base pour vérifier que le serveur fonctionne
+app.get('/', (req, res) => {
+  res.json({ message: 'Serveur de notifications push opérationnel' });
+});
+
+// Utiliser des clés VAPID fixes au lieu de les générer à chaque démarrage
 // Dans un environnement de production, ces clés devraient être stockées de manière sécurisée
-const vapidKeys = webpush.generateVAPIDKeys();
+const vapidKeys = {
+  publicKey: 'BNLjvulQ-v3LvcNqGZOset2E55WY5XD4JKuNxeW3x2k6L_SHvVK0LlYMQDTIu_zH9GuoifWGHeRpzL85hc0bHWs',
+  privateKey: 'dgPwKs3O5BYdxSEo4Av8nMsaPjEiffvTogA-74O47yI'
+};
 
 // Configuration des clés VAPID pour web-push
 webpush.setVapidDetails(
@@ -25,7 +37,7 @@ webpush.setVapidDetails(
 const subscriptions = [];
 
 // Variable pour activer/désactiver les notifications automatiques
-let autoNotificationsEnabled = false;
+let autoNotificationsEnabled = true; // Activé par défaut
 let autoNotificationsInterval = null;
 const AUTO_NOTIFICATION_DELAY = 10000; // 10 secondes
 
@@ -55,9 +67,11 @@ app.post('/api/subscribe', (req, res) => {
     
     webpush.sendNotification(subscription, payload)
       .then(() => {
+      
         res.status(200).json({ success: true, message: 'Notification envoyée avec succès' });
       })
       .catch(err => {
+       
         res.status(500).json({ success: false, message: 'Erreur lors de l\'envoi de la notification', error: err.message });
       });
   } catch (error) {
@@ -67,9 +81,13 @@ app.post('/api/subscribe', (req, res) => {
 
 // Fonction pour envoyer une notification à tous les abonnés
 const sendNotificationToAll = async (title, body) => {
-  if (!title || !body || subscriptions.length === 0) {
-    console.log('Impossible d\'envoyer des notifications: titre/corps manquant ou aucun abonné');
-    return { success: false, message: 'Titre/corps manquant ou aucun abonné' };
+  if (!title || !body) {
+    return { success: false, message: 'Titre et corps requis pour la notification' };
+  }
+  
+  if (subscriptions.length === 0) {
+    
+    return { success: true, message: 'Aucun abonné disponible, mais la requête a été traitée avec succès', sent: 0 };
   }
   
   const payload = JSON.stringify({
@@ -89,8 +107,8 @@ const sendNotificationToAll = async (title, body) => {
     
     await Promise.all(sendPromises);
     return { success: true, message: 'Notifications envoyées avec succès' };
-  } catch (err) {
-    console.error('Erreur lors de l\'envoi des notifications:', err);
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi des notifications:', error);
     return { success: false, message: 'Erreur lors de l\'envoi des notifications' };
   }
 };
@@ -121,8 +139,8 @@ app.post('/api/auto-notify', (req, res) => {
     if (!autoNotificationsEnabled) {
       autoNotificationsEnabled = true;
       
-      // Intervalle en millisecondes (par défaut 30 secondes)
-      const notifyInterval = interval || 30000;
+      // Intervalle en millisecondes (par défaut 10 secondes)
+      const notifyInterval = interval || 10000;
       
       autoNotificationsInterval = setInterval(() => {
         if (subscriptions.length > 0) {
@@ -155,6 +173,17 @@ app.post('/api/auto-notify', (req, res) => {
 // Port d'écoute
 const PORT = 5001;
 
+// Démarrer le serveur HTTP
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
+  // Démarrer automatiquement l'intervalle de notifications
+  if (autoNotificationsEnabled) {
+    autoNotificationsInterval = setInterval(() => {
+      if (subscriptions.length > 0) {
+        const now = new Date().toLocaleTimeString();
+        
+        sendNotificationToAll('Notification automatique', `Cette notification a été envoyée automatiquement à ${now}`);
+      } 
+    }, AUTO_NOTIFICATION_DELAY);
+   
+  }
 });

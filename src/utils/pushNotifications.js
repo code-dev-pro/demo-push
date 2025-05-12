@@ -1,5 +1,12 @@
 // Utilitaire pour gérer les notifications push
 
+// Déterminer l'URL du backend en fonction de l'environnement
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168.') 
+  ? 'http://192.168.1.33:5001' 
+  : 'https://demo-push-backend.vercel.app';
+
+console.log('API URL:', API_URL);
+
 // Fonction pour vérifier si les notifications push sont supportées
 export function isPushNotificationSupported() {
   return 'serviceWorker' in navigator && 'PushManager' in window;
@@ -13,21 +20,27 @@ export async function askUserPermission() {
 // Fonction pour enregistrer le service worker
 export async function registerServiceWorker() {
   if (!isPushNotificationSupported()) {
+    console.error('Les notifications push ne sont pas supportées par ce navigateur');
     return null;
   }
   
   try {
-    const registration = await navigator.serviceWorker.register('/service-worker.js');
+    console.log('Tentative d\'enregistrement du service worker...');
+    const registration = await navigator.serviceWorker.register('/service-worker.js', {
+      scope: '/'
+    });
+    console.log('Service worker enregistré avec succès:', registration);
     return registration;
-  } catch {
-    return null;
+  } catch (error) {
+    console.error('Erreur lors de l\'enregistrement du service worker:', error);
+    throw error; // Propager l'erreur pour une meilleure gestion
   }
 }
 
 // Fonction pour obtenir la clé publique VAPID du serveur
 export async function getVapidPublicKey() {
   try {
-    const response = await fetch('http://localhost:5001/api/vapidPublicKey');
+    const response = await fetch(`${API_URL}/api/vapidPublicKey`);
     const data = await response.json();
     return data.publicKey;
   } catch {
@@ -103,19 +116,31 @@ export async function subscribeToPushNotifications() {
     });
     
     // Envoyer l'abonnement au serveur
-    const response = await fetch('http://localhost:5001/api/subscribe', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(subscription)
-    });
-    
-    await response.json();
-    
-    return subscription;
-  } catch {
-    return null;
+    console.log('Envoi de l\'abonnement au serveur:', API_URL);
+    try {
+      const response = await fetch(`${API_URL}/api/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(subscription)
+      });
+      
+      const responseData = await response.json();
+      console.log('Réponse du serveur:', responseData);
+      
+      if (!response.ok) {
+        throw new Error(`Erreur serveur: ${responseData.message || 'Erreur inconnue'}`);
+      }
+      
+      return subscription;
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'abonnement:', error);
+      throw error; // Propager l'erreur pour une meilleure gestion
+    }
+  } catch (error) {
+    console.error('Erreur globale lors de l\'abonnement:', error);
+    throw error; // Propager l'erreur pour une meilleure gestion
   }
 }
 
@@ -203,7 +228,7 @@ export async function sendSystemNotification(title, message) {
 // Fonction pour envoyer une notification push à tous les abonnés via le serveur
 export async function sendPushNotification(title, body) {
   try {
-    const response = await fetch('http://localhost:5001/api/notify', {
+    const response = await fetch(`${API_URL}/api/notify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

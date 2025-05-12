@@ -1,10 +1,11 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .app-container {
@@ -12,7 +13,9 @@
   flex-direction: column;
   gap: 2rem;
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 
@@ -55,6 +58,7 @@
 
 .button-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1.5rem;
 }
@@ -66,6 +70,9 @@
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s, transform 0.1s;
+  flex: 1 1 auto;
+  min-width: fit-content;
+  text-align: center;
 }
 
 .btn:hover {
@@ -137,4 +144,49 @@
 h1 {
   color: #fff;
   margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+/* Media Queries pour la responsivité */
+@media screen and (max-width: 768px) {
+  #root {
+    padding: 1rem 0.5rem;
+  }
+  
+  .card {
+    padding: 1.5em;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #root {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .card {
+    padding: 1.25em;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 0.6rem;
+  }
 }
