@@ -112,6 +112,21 @@ L'application démarrera sur http://localhost:5173.
    - **Notification système** : Affiche une notification native du système d'exploitation
    - **Notification push** : Envoie une notification qui s'affichera même lorsque l'application n'est pas au premier plan ou est fermée
 
+## Notifications Push "Offline" comme les Applications Natives
+
+Cette démo implémente un système de notifications push qui fonctionne de manière similaire aux applications natives :
+
+- **Réception hors ligne** : Les notifications peuvent être reçues même lorsque l'utilisateur n'est pas sur le site web
+- **Fonctionnement en arrière-plan** : Grâce au service worker, les notifications sont traitées même lorsque l'application est fermée
+- **Persistance** : Les abonnements sont stockés côté serveur, permettant d'envoyer des notifications à tout moment
+- **Notifications automatiques** : Démonstration de notifications envoyées à intervalles réguliers sans intervention de l'utilisateur
+
+Cela est possible grâce à :
+
+1. **Service Worker** : Exécute du code en arrière-plan, indépendamment de l'application
+2. **Web Push API** : Permet l'envoi de notifications aux utilisateurs abonnés
+3. **Système d'abonnement** : Gère les endpoints de notification pour chaque utilisateur
+
 ## Notes
 
 - Les notifications push ne fonctionnent que dans les navigateurs modernes qui prennent en charge l'API Web Push
