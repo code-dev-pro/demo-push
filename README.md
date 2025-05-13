@@ -73,41 +73,41 @@ Autres fonctionnalités :
                                                                      +----------------+
 ```
 
-### 0. Prérequis : Consentement de l'utilisateur
+### 1. Prérequis : Consentement de l'utilisateur
 
 - **Demande de permission** : L'utilisateur doit explicitement accepter de recevoir des notifications
 - **États possibles** : `granted` (accepté), `denied` (refusé), `default` (non décidé, équivalent à un refus)
 - **Persistance** : Le choix est mémorisé par le navigateur pour les futures visites
 - **Sans ce consentement** : Aucune notification push ne peut être envoyée ou reçue
 
-### 1. Abonnement (PushManager)
+### 2. Abonnement (PushManager)
 
 - L'utilisateur donne son autorisation pour recevoir des notifications
 - Le navigateur génère une paire de clés unique pour cet utilisateur
 - PushManager crée un abonnement avec un endpoint spécifique au navigateur
 - L'abonnement est envoyé au serveur et stocké pour une utilisation future
 
-### 2. Envoi (Serveur)
+### 3. Envoi (Serveur)
 
 - Le serveur décide d'envoyer une notification (manuellement ou automatiquement)
 - Il récupère les informations d'abonnement de l'utilisateur
 - Il chiffre le message avec la clé publique de l'utilisateur et les clés VAPID
 - Il envoie le message chiffré au service de push du navigateur via l'endpoint
 
-### 3. Réception (Service Worker)
+### 4. Réception (Service Worker)
 
 - Le service de push du navigateur reçoit le message et réveille le Service Worker
 - Le Service Worker intercepte l'événement 'push', même si l'application est fermée
 - Il déchiffre le message avec la clé privée stockée localement
 - Il prépare les données pour la notification
 
-### 4. Affichage (Notification)
+### 5. Affichage (Notification)
 
 - Le Service Worker utilise l'API Notification pour afficher la notification
 - La notification apparaît dans le système d'exploitation de l'utilisateur
 - Elle reste visible jusqu'à ce que l'utilisateur interagisse avec elle ou la ferme
 
-### 5. Interaction (Clic)
+### 6. Interaction (Clic)
 
 - L'utilisateur clique sur la notification
 - Le Service Worker intercepte l'événement 'notificationclick'
